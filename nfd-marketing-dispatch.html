@@ -4,52 +4,695 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>NFD — Marketing Meeting Notes</title>
-<script src="https://cdn.tailwindcss.com"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300..700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<script>
-  tailwind.config = {
-    theme: {
-      extend: {
-        colors: {
-          brand: {
-            DEFAULT: '#154071',
-            50: '#f0f4f9',
-            100: '#dde6f0',
-            200: '#b8cae1',
-            500: '#3d6396',
-            700: '#1f4f82',
-            800: '#154071',
-            900: '#0f2f54'
-          }
-        },
-        fontFamily: {
-          sans: ['Geist', 'ui-sans-serif', 'system-ui'],
-          serif: ['"Instrument Serif"', 'serif'],
-          mono: ['"JetBrains Mono"', 'ui-monospace']
-        }
-      }
-    }
-  }
-</script>
 <style>
-  body { font-feature-settings: "ss01", "kern", "cv11"; }
-  .dot-grid {
-    background-image: radial-gradient(circle, rgba(0,0,0,0.04) 1px, transparent 1px);
-    background-size: 18px 18px;
+/* ─────────── Tokens ─────────── */
+:root {
+  --brand: #154071;
+  --brand-line: rgba(21, 64, 113, 0.35);
+  --brand-soft: rgba(21, 64, 113, 0.5);
+
+  --zinc-50:  #fafafa;
+  --zinc-100: #f4f4f5;
+  --zinc-200: #e4e4e7;
+  --zinc-300: #d4d4d8;
+  --zinc-400: #a1a1aa;
+  --zinc-500: #71717a;
+  --zinc-600: #52525b;
+  --zinc-700: #3f3f46;
+  --zinc-900: #18181b;
+
+  --emerald-500: #10b981;
+  --emerald-700: #047857;
+  --emerald-800: #065f46;
+
+  --amber-100: #fef3c7;
+  --amber-200: #fde68a;
+  --amber-500: #f59e0b;
+  --amber-700: #b45309;
+  --amber-900: #78350f;
+
+  --sky-50:  #f0f9ff;
+  --sky-200: #bae6fd;
+  --sky-500: #0ea5e9;
+  --sky-700: #0369a1;
+
+  --rose-100: #ffe4e6;
+  --rose-200: #fecdd3;
+  --rose-600: #e11d48;
+  --rose-950: #4c0519;
+
+  --font-sans:  'Geist', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-serif: 'Instrument Serif', Georgia, serif;
+  --font-mono:  'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+
+  --label-tracking: 0.18em;
+  --radius: 1rem;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { background: var(--zinc-50); }
+body {
+  font-family: var(--font-sans);
+  font-size: 17px;
+  color: var(--zinc-900);
+  background: var(--zinc-50);
+  font-feature-settings: "ss01", "kern", "cv11";
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  min-height: 100vh;
+}
+ul { list-style: none; }
+a { color: inherit; text-decoration: inherit; }
+
+.page {
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 2.5rem 1.25rem 4rem;
+}
+@media (min-width: 768px) {
+  .page { padding: 4rem 2.5rem; }
+}
+
+/* ─────────── Masthead ─────────── */
+.masthead { margin-bottom: 3.5rem; }
+.masthead-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+}
+.brand-mark {
+  display: block;
+  flex-shrink: 0;
+  color: var(--brand);
+  width: 3.5rem;
+  height: 3.5rem;
+  transition: transform 0.3s ease;
+}
+.brand-mark:hover { transform: rotate(8deg); }
+.brand-mark svg { width: 100%; height: 100%; fill: currentColor; }
+@media (min-width: 768px) {
+  .brand-mark { width: 4rem; height: 4rem; }
+}
+
+.masthead-meta {
+  flex: 1;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-top: 0.25rem;
+}
+.eyebrow,
+.masthead-date {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: var(--label-tracking);
+  text-transform: uppercase;
+  color: var(--zinc-500);
+}
+.masthead-date { color: var(--zinc-400); }
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.625rem;
+}
+
+.dot {
+  width: 0.375rem;
+  height: 0.375rem;
+  border-radius: 9999px;
+  display: inline-block;
+  flex-shrink: 0;
+}
+.dot--brand   { background: var(--brand); }
+.dot--emerald { background: var(--emerald-500); }
+.dot--amber   { background: var(--amber-500); }
+.dot--zinc    { background: var(--zinc-400); }
+.dot--sky     { background: var(--sky-500); }
+
+.sep { color: var(--zinc-300); }
+
+.masthead-title {
+  font-size: clamp(3rem, 7vw, 4.75rem);
+  font-weight: 500;
+  line-height: 0.95;
+  letter-spacing: -0.025em;
+  color: var(--zinc-900);
+}
+.title-accent {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+  color: var(--brand);
+  text-decoration: underline solid var(--brand-line);
+  text-underline-offset: 6px;
+}
+
+.masthead-lede {
+  margin-top: 1.25rem;
+  font-size: 1rem;
+  color: var(--zinc-500);
+  max-width: 36rem;
+  line-height: 1.55;
+}
+@media (min-width: 768px) {
+  .masthead-lede { font-size: 1.125rem; }
+}
+
+.stats {
+  margin-top: 2rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.stat {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.375rem 0.75rem;
+  border-radius: 9999px;
+  background: white;
+  border: 1px solid var(--zinc-200);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: var(--label-tracking);
+  text-transform: uppercase;
+  color: var(--zinc-700);
+}
+
+/* ─────────── Section ─────────── */
+.section { margin-bottom: 3rem; }
+.section-header {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+.section-num,
+.section-meta {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: var(--label-tracking);
+  text-transform: uppercase;
+  color: var(--zinc-400);
+}
+.section-meta { margin-left: auto; }
+.section-title {
+  font-size: 1.25rem;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+@media (min-width: 768px) {
+  .section-title { font-size: 1.5rem; }
+}
+
+.brand-lede {
+  margin-bottom: 1.25rem;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 1rem;
+  color: var(--zinc-500);
+}
+
+/* ─────────── Card base ─────────── */
+.card {
+  background: white;
+  border: 1px solid var(--zinc-200);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ─────────── Tenets ─────────── */
+.tenets {
+  display: grid;
+  gap: 0.75rem;
+}
+@media (min-width: 768px) {
+  .tenets { grid-template-columns: 1fr 1fr; }
+}
+.tenet { padding: 1.75rem; }
+@media (min-width: 768px) {
+  .tenet { padding: 2rem; }
+}
+.tenet-bar {
+  position: absolute;
+  top: 1.75rem;
+  bottom: 1.75rem;
+  left: 0;
+  width: 3px;
+  border-radius: 0 2px 2px 0;
+}
+.tenet--primary   .tenet-bar { background: var(--brand); }
+.tenet--secondary .tenet-bar { background: var(--emerald-700); }
+
+.tenet-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: var(--label-tracking);
+  text-transform: uppercase;
+}
+.tenet--primary   .tenet-label { color: var(--brand); }
+.tenet--secondary .tenet-label { color: var(--emerald-700); }
+.tenet-label .roman {
+  font-family: var(--font-serif);
+  font-style: italic;
+  color: var(--zinc-500);
+  text-transform: none;
+}
+
+.tenet-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.tenet-item { display: flex; gap: 1rem; }
+.tenet-item + .tenet-item {
+  padding-top: 1rem;
+  border-top: 1px dashed var(--zinc-100);
+}
+.tenet-num {
+  width: 1.75rem;
+  flex-shrink: 0;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 1.125rem;
+  line-height: 1;
+  padding-top: 0.25rem;
+  color: var(--brand-soft);
+}
+.tenet--secondary .tenet-num { color: rgba(4, 120, 87, 0.5); }
+.tenet-text {
+  flex: 1;
+  font-size: 0.9375rem;
+  line-height: 1.4;
+  color: var(--zinc-900);
+}
+@media (min-width: 768px) {
+  .tenet-text { font-size: 1rem; }
+}
+.tenet-text strong { font-weight: 500; }
+.tenet-text .em-dash { color: var(--zinc-400); }
+.tenet-highlight {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 500;
+  color: var(--emerald-800);
+}
+.tenet-sub {
+  display: block;
+  margin-top: 0.375rem;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 0.9375rem;
+  color: var(--zinc-500);
+}
+
+/* ─────────── 12-col grid ─────────── */
+.grid-12 {
+  display: grid;
+  gap: 0.75rem;
+}
+@media (min-width: 768px) {
+  .grid-12 { grid-template-columns: repeat(12, minmax(0, 1fr)); }
+  .col-5  { grid-column: span 5 / span 5; }
+  .col-7  { grid-column: span 7 / span 7; }
+  .col-12 { grid-column: span 12 / span 12; }
+}
+
+/* ─────────── Open card ─────────── */
+.open-card { display: flex; flex-direction: column; }
+.open-card-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+}
+.meta-text {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: var(--label-tracking);
+  text-transform: uppercase;
+  color: var(--zinc-400);
+}
+.open-card h3 {
+  font-size: 1.125rem;
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  margin-bottom: 0.5rem;
+}
+.open-card p {
+  font-size: 0.875rem;
+  color: var(--zinc-600);
+  line-height: 1.55;
+}
+.open-card-divider {
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px dashed var(--zinc-200);
+}
+.open-card-divider p {
+  font-style: italic;
+  font-family: var(--font-serif);
+  font-size: 1rem;
+  color: var(--zinc-700);
+}
+
+/* Pills */
+.pill {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  letter-spacing: var(--label-tracking);
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  border: 1px solid;
+  white-space: nowrap;
+}
+.pill--open {
+  background: rgba(245, 158, 11, 0.08);
+  color: var(--amber-700);
+  border-color: var(--amber-200);
+}
+.pill--this-week,
+.pill--month {
+  background: var(--sky-50);
+  color: var(--sky-700);
+  border-color: var(--sky-200);
+}
+.pill--reference,
+.pill--idle {
+  background: var(--zinc-100);
+  color: var(--zinc-600);
+  border-color: var(--zinc-200);
+}
+.pill--alert {
+  background: var(--rose-600);
+  color: white;
+  border-color: var(--rose-600);
+}
+
+/* Tracks (inside Ads card) */
+.tracks {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+  margin-top: auto;
+}
+.track {
+  background: var(--zinc-50);
+  border: 1px solid var(--zinc-200);
+  border-radius: 0.5rem;
+  padding: 0.625rem 0.75rem 0.75rem 1rem;
+  position: relative;
+}
+.track::before {
+  content: "";
+  position: absolute;
+  left: 0.375rem;
+  top: 0.625rem;
+  bottom: 0.625rem;
+  width: 2px;
+  background: var(--amber-500);
+  border-radius: 9999px;
+}
+.track-num {
+  font-family: var(--font-mono);
+  font-size: 0.5625rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--zinc-400);
+  margin-bottom: 0.125rem;
+}
+.track-name {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+/* Strip card (Mother's Day, April UGC) */
+.strip {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem;
+}
+@media (min-width: 768px) {
+  .strip {
+    flex-direction: row;
+    align-items: center;
+    padding: 1.5rem;
   }
+}
+.strip-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-shrink: 0;
+}
+.strip-divider {
+  display: none;
+  width: 1px;
+  align-self: stretch;
+  background: var(--zinc-200);
+}
+@media (min-width: 768px) {
+  .strip-divider { display: block; }
+}
+.strip-body { flex: 1; min-width: 0; }
+.strip-body h3 {
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  font-size: 1.0625rem;
+}
+.strip-body--lg h3 { font-size: 1.125rem; }
+.strip-body p {
+  font-size: 0.875rem;
+  color: var(--zinc-600);
+  line-height: 1.55;
+}
+
+/* ─────────── Completed grid ─────────── */
+.completed-grid {
+  display: grid;
+  gap: 0.75rem;
+}
+@media (min-width: 768px) {
+  .completed-grid { grid-template-columns: 2fr 1fr; }
+  .completed-grid > .full { grid-column: 1 / -1; }
+}
+.completed-card { display: flex; flex-direction: column; }
+.completed-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  letter-spacing: var(--label-tracking);
+  text-transform: uppercase;
+}
+.status--done { color: var(--emerald-700); }
+.completed-card h3 {
+  font-size: 1.125rem;
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  margin-bottom: 0.375rem;
+}
+.completed-card > p {
+  font-size: 0.875rem;
+  color: var(--zinc-600);
+  line-height: 1.55;
+  margin-bottom: 1rem;
+}
+
+.note {
+  display: flex;
+  gap: 0.75rem;
+  padding: 0.875rem;
+  background: rgba(254, 243, 199, 0.5);
+  border: 1px solid rgba(253, 230, 138, 0.7);
+  border-radius: 0.75rem;
+}
+.note-label {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  letter-spacing: var(--label-tracking);
+  text-transform: uppercase;
+  color: var(--amber-700);
+  padding-top: 2px;
+  flex-shrink: 0;
+}
+.note-text {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 1rem;
+  line-height: 1.4;
+  color: rgba(120, 53, 15, 0.85);
+}
+
+.dot-grid {
+  margin: 1.5rem -1.5rem -1.5rem -1.5rem;
+  height: 3rem;
+  background-image: radial-gradient(circle, rgba(0,0,0,0.04) 1px, transparent 1px);
+  background-size: 18px 18px;
+  border-radius: 0 0 var(--radius) var(--radius);
+}
+
+/* ─────────── References ─────────── */
+.refs-grid {
+  display: grid;
+  gap: 0.75rem;
+}
+@media (min-width: 768px) {
+  .refs-grid { grid-template-columns: repeat(3, 1fr); }
+}
+.ref-card .pill { margin-bottom: 1.25rem; }
+.ref-handle {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 1.5rem;
+  letter-spacing: -0.018em;
+  margin-bottom: 0.75rem;
+  display: block;
+}
+.ref-card p {
+  font-size: 0.875rem;
+  color: var(--zinc-600);
+  line-height: 1.55;
+}
+.ref-card--alert {
+  background: rgba(255, 241, 242, 0.4);
+  border-color: var(--rose-200);
+  position: relative;
+  overflow: hidden;
+}
+.ref-card--alert::before {
+  content: "";
+  position: absolute;
+  top: -1rem;
+  right: -1rem;
+  width: 6rem;
+  height: 6rem;
+  background: rgba(254, 205, 211, 0.6);
+  border-radius: 9999px;
+  filter: blur(40px);
+  pointer-events: none;
+}
+.ref-card--alert .ref-handle { color: var(--rose-950); position: relative; }
+.ref-card--alert p { position: relative; color: var(--zinc-700); }
+.ref-card--alert em { color: var(--rose-950); font-style: italic; }
+
+/* ─────────── Pipeline ─────────── */
+.pipeline {
+  background: white;
+  border: 1px solid var(--zinc-200);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.pipeline-row {
+  display: grid;
+  grid-template-columns: 40px 1fr auto;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.25rem;
+  transition: background 0.15s ease;
+}
+@media (min-width: 768px) {
+  .pipeline-row { grid-template-columns: 60px 220px 1fr auto; }
+}
+.pipeline-row + .pipeline-row { border-top: 1px solid var(--zinc-100); }
+.pipeline-row:hover { background: rgba(250, 250, 250, 0.5); }
+.pipeline-num {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 1.5rem;
+  color: var(--zinc-300);
+}
+.pipeline-row h3 {
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  font-size: 1rem;
+}
+.pipeline-row p { display: none; }
+@media (min-width: 768px) {
+  .pipeline-row p {
+    display: block;
+    font-size: 0.875rem;
+    color: var(--zinc-600);
+    line-height: 1.55;
+  }
+}
+.pipeline-empty {
+  font-family: var(--font-serif);
+  font-style: italic;
+  color: var(--zinc-400) !important;
+}
+.pipeline-row .pill { justify-self: end; }
+
+/* ─────────── Footer ─────────── */
+.footer {
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--zinc-200);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: var(--label-tracking);
+  text-transform: uppercase;
+  color: var(--zinc-400);
+}
+.footer-left {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.625rem;
+}
+.footer-mark {
+  width: 1.25rem;
+  height: 1.25rem;
+  color: var(--brand);
+  display: inline-block;
+}
+.footer-mark svg { width: 100%; height: 100%; fill: currentColor; }
+
+/* ─────────── Responsive masthead stack ─────────── */
+@media (max-width: 520px) {
+  .masthead-meta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+}
 </style>
 </head>
-<body class="bg-zinc-50 text-zinc-900 font-sans antialiased min-h-screen">
+<body>
 
-<div class="max-w-6xl mx-auto px-5 py-10 md:px-10 md:py-16">
+<div class="page">
 
   <!-- ─────────── Masthead ─────────── -->
-  <header class="mb-14">
-    <div class="flex items-start justify-between gap-6 mb-10">
-      <a href="#" class="shrink-0 group block" aria-label="NFD home">
-        <svg class="size-14 md:size-16 text-brand transition-transform group-hover:rotate-[8deg]" viewBox="0 0 489 501" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <header class="masthead">
+    <div class="masthead-top">
+      <a href="#" class="brand-mark" aria-label="NFD home">
+        <svg viewBox="0 0 489 501" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
           <path d="M64.3722 221.732L2.58314 200.464L2.90382 199.414L69.5308 171.662L69.6911 171.138L17.143 157.188L18.9602 151.24L80.7493 172.508L80.4286 173.557L13.8017 201.309L13.6413 201.834L66.1895 215.783L64.3722 221.732Z"/>
           <path d="M89.5934 150.349L35.85 115.55L39.2305 110.329L92.9739 145.129L89.5934 150.349Z"/>
           <path d="M107.358 128.262L66.2105 77.4974L67.0384 76.7768L138.252 88.5235L138.666 88.1632L101.48 48.5003L106.172 44.4172L147.32 95.1818L146.492 95.9024L75.2789 84.1557L74.8649 84.516L112.05 124.179L107.358 128.262Z"/>
@@ -72,101 +715,88 @@
           <path d="M273.421 139.246C267.985 147.302 262.274 159.609 259.59 168.387C253.802 167.554 246.079 167.899 243.291 167.981C247.043 155.772 254.64 148.574 261.317 144.424C264.677 142.336 267.803 141.019 270.09 140.225C271.232 139.828 272.165 139.562 272.811 139.395C273.057 139.331 273.262 139.283 273.421 139.246Z"/>
         </svg>
       </a>
-      <div class="flex-1 flex items-start justify-between gap-4 pt-1">
-        <div class="flex items-center gap-2.5 text-[11px] font-mono tracking-[0.18em] uppercase text-zinc-500">
-          <span class="size-1.5 rounded-full bg-brand"></span>
-          NFD <span class="text-zinc-300">/</span> Marketing
-        </div>
-        <div class="text-[11px] font-mono tracking-[0.18em] uppercase text-zinc-400">
-          May 2026
-        </div>
+
+      <div class="masthead-meta">
+        <span class="eyebrow">
+          <span class="dot dot--brand"></span>
+          NFD <span class="sep">/</span> Marketing
+        </span>
+        <span class="masthead-date">May 2026</span>
       </div>
     </div>
 
-    <h1 class="text-5xl md:text-7xl font-medium tracking-tight text-zinc-900 leading-[0.95]">
-      Meeting <span class="font-serif italic font-normal text-brand [text-decoration:underline_solid_oklch(0.36_0.10_255_/_0.35)] [text-underline-offset:6px]">notes</span>.
+    <h1 class="masthead-title">
+      Meeting <span class="title-accent">notes</span>.
     </h1>
 
-    <p class="mt-5 text-base md:text-lg text-zinc-500 max-w-xl">
+    <p class="masthead-lede">
       A working summary of completed work, open decisions, and what's next for NFD.
     </p>
 
-    <div class="mt-8 flex flex-wrap items-center gap-2 text-[11px] font-mono tracking-[0.18em] uppercase">
-      <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-zinc-200">
-        <span class="size-1.5 rounded-full bg-emerald-500"></span> 3 completed
-      </span>
-      <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-zinc-200">
-        <span class="size-1.5 rounded-full bg-amber-500"></span> 3 open
-      </span>
-      <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-zinc-200">
-        <span class="size-1.5 rounded-full bg-zinc-400"></span> 3 references
-      </span>
-      <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-zinc-200">
-        <span class="size-1.5 rounded-full bg-sky-500"></span> 5 in pipeline
-      </span>
+    <div class="stats">
+      <span class="stat"><span class="dot dot--emerald"></span> 3 completed</span>
+      <span class="stat"><span class="dot dot--amber"></span> 3 open</span>
+      <span class="stat"><span class="dot dot--zinc"></span> 3 references</span>
+      <span class="stat"><span class="dot dot--sky"></span> 5 in pipeline</span>
     </div>
   </header>
 
   <!-- ─────────── § I — Brand Direction ─────────── -->
-  <section class="mb-12">
-    <div class="flex items-baseline gap-3 mb-5">
-      <span class="text-[11px] font-mono tracking-[0.18em] uppercase text-zinc-400">§ I</span>
-      <h2 class="text-xl md:text-2xl font-medium tracking-tight">Brand direction</h2>
-      <span class="ml-auto text-[11px] font-mono tracking-[0.18em] uppercase text-zinc-400">Strategy</span>
+  <section class="section">
+    <div class="section-header">
+      <span class="section-num">§ I</span>
+      <h2 class="section-title">Brand direction</h2>
+      <span class="section-meta">Strategy</span>
     </div>
 
-    <p class="text-sm text-zinc-500 mb-5 italic font-serif text-base">Brand values positioning concept pitched.</p>
+    <p class="brand-lede">Brand values positioning concept pitched.</p>
 
-    <div class="grid md:grid-cols-2 gap-3">
+    <div class="tenets">
 
-      <article class="bg-white border border-zinc-200 rounded-2xl p-7 md:p-8 relative overflow-hidden group">
-        <div class="absolute inset-y-7 left-0 w-[3px] bg-brand rounded-r"></div>
-        <div class="flex items-center gap-2 mb-6">
-          <span class="text-[11px] font-mono tracking-[0.18em] uppercase text-brand">Primary</span>
-          <span class="text-zinc-300">·</span>
-          <span class="text-[11px] font-serif italic text-zinc-500">i.</span>
+      <article class="card tenet tenet--primary">
+        <div class="tenet-bar"></div>
+        <div class="tenet-label">
+          Primary <span class="sep">·</span> <span class="roman">i.</span>
         </div>
-        <ul class="space-y-4">
-          <li class="flex gap-4">
-            <span class="text-lg font-serif italic text-brand/50 w-7 shrink-0 leading-none pt-1">01</span>
-            <p class="text-[15px] md:text-base leading-snug text-zinc-900 flex-1">
-              <span class="font-medium text-zinc-900">Product, product, product</span> <span class="text-zinc-400">—</span> lead with what we make. Explain it, show it, sell it. Every post, every ad, every story.
+        <ul class="tenet-list">
+          <li class="tenet-item">
+            <span class="tenet-num">01</span>
+            <p class="tenet-text">
+              <strong>Product, product, product</strong> <span class="em-dash">—</span> lead with what we make. Explain it, show it, sell it. Every post, every ad, every story.
             </p>
           </li>
-          <li class="flex gap-4 pt-4 border-t border-dashed border-zinc-100">
-            <span class="text-lg font-serif italic text-brand/50 w-7 shrink-0 leading-none pt-1">02</span>
-            <p class="text-[15px] md:text-base leading-snug text-zinc-900 flex-1">
-              <span class="font-medium text-zinc-900">Morning vibe</span> <span class="text-zinc-400">—</span> ads should feel like a good morning. Warm, inviting, early-day energy.
-              <span class="block mt-1.5 text-[13px] text-zinc-500 italic font-serif text-[15px]">Exception: continental food can run night time.</span>
+          <li class="tenet-item">
+            <span class="tenet-num">02</span>
+            <p class="tenet-text">
+              <strong>Morning vibe</strong> <span class="em-dash">—</span> ads should feel like a good morning. Warm, inviting, early-day energy.
+              <span class="tenet-sub">Exception: continental food can run night time.</span>
             </p>
           </li>
-          <li class="flex gap-4 pt-4 border-t border-dashed border-zinc-100">
-            <span class="text-lg font-serif italic text-brand/50 w-7 shrink-0 leading-none pt-1">03</span>
-            <p class="text-[15px] md:text-base leading-snug text-zinc-900 flex-1">
-              <span class="font-medium text-zinc-900">Story-driven</span> <span class="text-zinc-400">—</span> origins of recipes. Where a dish comes from, why it's on the menu, what went into it.
+          <li class="tenet-item">
+            <span class="tenet-num">03</span>
+            <p class="tenet-text">
+              <strong>Story-driven</strong> <span class="em-dash">—</span> origins of recipes. Where a dish comes from, why it's on the menu, what went into it.
             </p>
           </li>
         </ul>
       </article>
 
-      <article class="bg-white border border-zinc-200 rounded-2xl p-7 md:p-8 relative overflow-hidden">
-        <div class="absolute inset-y-7 left-0 w-[3px] bg-emerald-700 rounded-r"></div>
-        <div class="flex items-center gap-2 mb-6">
-          <span class="text-[11px] font-mono tracking-[0.18em] uppercase text-emerald-700">Secondary</span>
-          <span class="text-zinc-300">·</span>
-          <span class="text-[11px] font-serif italic text-zinc-500">ii.</span>
+      <article class="card tenet tenet--secondary">
+        <div class="tenet-bar"></div>
+        <div class="tenet-label">
+          Secondary <span class="sep">·</span> <span class="roman">ii.</span>
         </div>
-        <ul class="space-y-4">
-          <li class="flex gap-4">
-            <span class="text-lg font-serif italic text-emerald-700/50 w-7 shrink-0 leading-none pt-1">01</span>
-            <p class="text-[15px] md:text-base leading-snug text-zinc-900 flex-1">
-              NFD as a <em class="font-serif not-italic font-medium text-emerald-800 italic">story-driven literary space</em> <span class="text-zinc-400">—</span> illustrators, artists, and book clubs as community identity, not just a café.
+        <ul class="tenet-list">
+          <li class="tenet-item">
+            <span class="tenet-num">01</span>
+            <p class="tenet-text">
+              NFD as a <span class="tenet-highlight">story-driven literary space</span> <span class="em-dash">—</span> illustrators, artists, and book clubs as community identity, not just a café.
             </p>
           </li>
-          <li class="flex gap-4 pt-4 border-t border-dashed border-zinc-100">
-            <span class="text-lg font-serif italic text-emerald-700/50 w-7 shrink-0 leading-none pt-1">02</span>
-            <p class="text-[15px] md:text-base leading-snug text-zinc-900 flex-1">
-              <span class="font-medium text-zinc-900">Collabs build who we are</span> <span class="text-zinc-400">—</span> not just reach. The community we keep defines the brand.
+          <li class="tenet-item">
+            <span class="tenet-num">02</span>
+            <p class="tenet-text">
+              <strong>Collabs build who we are</strong> <span class="em-dash">—</span> not just reach. The community we keep defines the brand.
             </p>
           </li>
         </ul>
@@ -176,62 +806,59 @@
   </section>
 
   <!-- ─────────── § II — Open Items ─────────── -->
-  <section class="mb-12">
-    <div class="flex items-baseline gap-3 mb-5">
-      <span class="text-[11px] font-mono tracking-[0.18em] uppercase text-zinc-400">§ II</span>
-      <h2 class="text-xl md:text-2xl font-medium tracking-tight">Open items</h2>
-      <span class="ml-auto text-[11px] font-mono tracking-[0.18em] uppercase text-zinc-400">Needs decision</span>
+  <section class="section">
+    <div class="section-header">
+      <span class="section-num">§ II</span>
+      <h2 class="section-title">Open items</h2>
+      <span class="section-meta">Needs decision</span>
     </div>
 
-    <div class="grid md:grid-cols-12 gap-3">
+    <div class="grid-12">
 
-      <article class="md:col-span-5 bg-white border border-zinc-200 rounded-2xl p-6 flex flex-col">
-        <div class="flex items-center justify-between mb-5">
-          <span class="text-[11px] font-mono tracking-[0.18em] uppercase text-zinc-400">№ 01 · Instagram</span>
-          <span class="text-[10px] font-mono tracking-[0.18em] uppercase px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200">Open</span>
+      <article class="card open-card col-5">
+        <div class="open-card-meta">
+          <span class="meta-text">№ 01 · Instagram</span>
+          <span class="pill pill--open">Open</span>
         </div>
-        <h3 class="text-lg font-medium mb-2 tracking-tight">Instagram grid strategy</h3>
-        <p class="text-sm text-zinc-600 leading-relaxed">Grid aesthetic and posting cadence not defined. Weekend promotions to continue.</p>
-        <div class="mt-5 pt-4 border-t border-dashed border-zinc-200">
-          <p class="text-sm text-zinc-700 italic font-serif text-base">Core problem: product marketing approach needs clarity.</p>
+        <h3>Instagram grid strategy</h3>
+        <p>Grid aesthetic and posting cadence not defined. Weekend promotions to continue.</p>
+        <div class="open-card-divider">
+          <p>Core problem: product marketing approach needs clarity.</p>
         </div>
       </article>
 
-      <article class="md:col-span-7 bg-white border border-zinc-200 rounded-2xl p-6 flex flex-col">
-        <div class="flex items-center justify-between mb-5">
-          <span class="text-[11px] font-mono tracking-[0.18em] uppercase text-zinc-400">№ 02 · Advertising · ~1 wk</span>
-          <span class="text-[10px] font-mono tracking-[0.18em] uppercase px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200">Open</span>
+      <article class="card open-card col-7">
+        <div class="open-card-meta">
+          <span class="meta-text">№ 02 · Advertising · ~1 wk</span>
+          <span class="pill pill--open">Open</span>
         </div>
-        <h3 class="text-lg font-medium mb-2 tracking-tight">Ads — quality vs. product conflict</h3>
-        <p class="text-sm text-zinc-600 leading-relaxed mb-5">~1 week to resolve. Approval process to be structured around three tracks:</p>
-        <div class="grid grid-cols-3 gap-2 mt-auto">
-          <div class="bg-zinc-50 border border-zinc-200 rounded-lg px-3 py-2.5 relative pl-4">
-            <div class="absolute left-1.5 top-2.5 bottom-2.5 w-0.5 bg-amber-500 rounded-full"></div>
-            <div class="text-[9px] font-mono tracking-[0.2em] uppercase text-zinc-400 mb-0.5">Track I</div>
-            <div class="text-[13px] font-medium tracking-tight">Product-driven</div>
+        <h3>Ads — quality vs. product conflict</h3>
+        <p style="margin-bottom: 1.25rem;">~1 week to resolve. Approval process to be structured around three tracks:</p>
+        <div class="tracks">
+          <div class="track">
+            <div class="track-num">Track I</div>
+            <div class="track-name">Product-driven</div>
           </div>
-          <div class="bg-zinc-50 border border-zinc-200 rounded-lg px-3 py-2.5 relative pl-4">
-            <div class="absolute left-1.5 top-2.5 bottom-2.5 w-0.5 bg-amber-500 rounded-full"></div>
-            <div class="text-[9px] font-mono tracking-[0.2em] uppercase text-zinc-400 mb-0.5">Track II</div>
-            <div class="text-[13px] font-medium tracking-tight">Narrative-driven</div>
+          <div class="track">
+            <div class="track-num">Track II</div>
+            <div class="track-name">Narrative-driven</div>
           </div>
-          <div class="bg-zinc-50 border border-zinc-200 rounded-lg px-3 py-2.5 relative pl-4">
-            <div class="absolute left-1.5 top-2.5 bottom-2.5 w-0.5 bg-amber-500 rounded-full"></div>
-            <div class="text-[9px] font-mono tracking-[0.2em] uppercase text-zinc-400 mb-0.5">Track III</div>
-            <div class="text-[13px] font-medium tracking-tight">Location-driven</div>
+          <div class="track">
+            <div class="track-num">Track III</div>
+            <div class="track-name">Location-driven</div>
           </div>
         </div>
       </article>
 
-      <article class="md:col-span-12 bg-white border border-zinc-200 rounded-2xl p-5 md:p-6 flex flex-col md:flex-row md:items-center gap-4">
-        <div class="flex items-center gap-3 shrink-0">
-          <span class="text-[11px] font-mono tracking-[0.18em] uppercase text-zinc-400">№ 03</span>
-          <span class="text-[10px] font-mono tracking-[0.18em] uppercase px-2 py-0.5 rounded-full bg-sky-50 text-sky-700 border border-sky-200">This week</span>
+      <article class="card strip col-12">
+        <div class="strip-meta">
+          <span class="meta-text">№ 03</span>
+          <span class="pill pill--this-week">This week</span>
         </div>
-        <div class="hidden md:block w-px self-stretch bg-zinc-200"></div>
-        <div class="flex-1 min-w-0">
-          <h3 class="font-medium tracking-tight">Next week's ad plan</h3>
-          <p class="text-sm text-zinc-600">Mother's Day ad — targeting 5th. Discount structure TBD.</p>
+        <div class="strip-divider"></div>
+        <div class="strip-body">
+          <h3>Next week's ad plan</h3>
+          <p>Mother's Day ad — targeting 5th. Discount structure TBD.</p>
         </div>
       </article>
 
@@ -239,51 +866,45 @@
   </section>
 
   <!-- ─────────── § III — Completed ─────────── -->
-  <section class="mb-12">
-    <div class="flex items-baseline gap-3 mb-5">
-      <span class="text-[11px] font-mono tracking-[0.18em] uppercase text-zinc-400">§ III</span>
-      <h2 class="text-xl md:text-2xl font-medium tracking-tight">Completed</h2>
+  <section class="section">
+    <div class="section-header">
+      <span class="section-num">§ III</span>
+      <h2 class="section-title">Completed</h2>
     </div>
 
-    <div class="grid md:grid-cols-3 gap-3">
+    <div class="completed-grid">
 
-      <article class="md:col-span-2 bg-white border border-zinc-200 rounded-2xl p-6">
-        <div class="flex items-center justify-between mb-4">
-          <span class="text-[11px] font-mono tracking-[0.18em] uppercase text-zinc-400">March</span>
-          <span class="inline-flex items-center gap-1.5 text-[10px] font-mono tracking-[0.18em] uppercase text-emerald-700">
-            <span class="size-1.5 rounded-full bg-emerald-500"></span> Done
-          </span>
+      <article class="card completed-card">
+        <div class="completed-meta">
+          <span class="meta-text">March</span>
+          <span class="status status--done"><span class="dot dot--emerald"></span> Done</span>
         </div>
-        <h3 class="text-lg font-medium mb-1.5 tracking-tight">Night time UGC reels</h3>
-        <p class="text-sm text-zinc-600 mb-4">Currently being repurposed as ads.</p>
-        <div class="flex gap-3 p-3.5 bg-amber-50/60 border border-amber-200/60 rounded-xl">
-          <span class="text-[10px] font-mono tracking-[0.18em] uppercase text-amber-700 pt-0.5 shrink-0">Note</span>
-          <p class="text-[14px] text-amber-950/80 italic font-serif text-[16px] leading-snug">Night time content shouldn't run as ads — use morning vibe for ads instead. Exception: continental food.</p>
+        <h3>Night time UGC reels</h3>
+        <p>Currently being repurposed as ads.</p>
+        <div class="note">
+          <span class="note-label">Note</span>
+          <p class="note-text">Night time content shouldn't run as ads — use morning vibe for ads instead. Exception: continental food.</p>
         </div>
       </article>
 
-      <article class="bg-white border border-zinc-200 rounded-2xl p-6 flex flex-col">
-        <div class="flex items-center justify-between mb-4">
-          <span class="text-[11px] font-mono tracking-[0.18em] uppercase text-zinc-400">March</span>
-          <span class="inline-flex items-center gap-1.5 text-[10px] font-mono tracking-[0.18em] uppercase text-emerald-700">
-            <span class="size-1.5 rounded-full bg-emerald-500"></span> Done
-          </span>
+      <article class="card completed-card">
+        <div class="completed-meta">
+          <span class="meta-text">March</span>
+          <span class="status status--done"><span class="dot dot--emerald"></span> Done</span>
         </div>
-        <h3 class="text-lg font-medium tracking-tight">Free coffee Eid post</h3>
-        <div class="mt-auto pt-6 dot-grid h-12 -mx-6 -mb-6 rounded-b-2xl"></div>
+        <h3>Free coffee Eid post</h3>
+        <div class="dot-grid"></div>
       </article>
 
-      <article class="md:col-span-3 bg-white border border-zinc-200 rounded-2xl p-6 flex flex-col md:flex-row md:items-center gap-4">
-        <div class="flex items-center gap-3 shrink-0">
-          <span class="text-[11px] font-mono tracking-[0.18em] uppercase text-zinc-400">April</span>
-          <span class="inline-flex items-center gap-1.5 text-[10px] font-mono tracking-[0.18em] uppercase text-emerald-700">
-            <span class="size-1.5 rounded-full bg-emerald-500"></span> Done
-          </span>
+      <article class="card strip full">
+        <div class="strip-meta">
+          <span class="meta-text">April</span>
+          <span class="status status--done"><span class="dot dot--emerald"></span> Done</span>
         </div>
-        <div class="hidden md:block w-px self-stretch bg-zinc-200"></div>
-        <div class="flex-1 min-w-0">
-          <h3 class="text-lg font-medium tracking-tight">UGC + Alishaba influencer lineup</h3>
-          <p class="text-sm text-zinc-600">New influencer UGC underway.</p>
+        <div class="strip-divider"></div>
+        <div class="strip-body strip-body--lg">
+          <h3>UGC + Alishaba influencer lineup</h3>
+          <p>New influencer UGC underway.</p>
         </div>
       </article>
 
@@ -291,90 +912,92 @@
   </section>
 
   <!-- ─────────── § IV — References ─────────── -->
-  <section class="mb-12">
-    <div class="flex items-baseline gap-3 mb-5">
-      <span class="text-[11px] font-mono tracking-[0.18em] uppercase text-zinc-400">§ IV</span>
-      <h2 class="text-xl md:text-2xl font-medium tracking-tight">References</h2>
+  <section class="section">
+    <div class="section-header">
+      <span class="section-num">§ IV</span>
+      <h2 class="section-title">References</h2>
     </div>
 
-    <div class="grid md:grid-cols-3 gap-3">
+    <div class="refs-grid">
 
-      <article class="bg-white border border-zinc-200 rounded-2xl p-6">
-        <span class="inline-block text-[10px] font-mono tracking-[0.18em] uppercase px-2 py-0.5 rounded-full bg-zinc-100 text-zinc-600 border border-zinc-200 mb-5">Reference</span>
-        <h3 class="text-2xl font-serif italic font-normal mb-3 tracking-tight">@brewtique.coffee</h3>
-        <p class="text-sm text-zinc-600 leading-relaxed">Consistently posting with focus on product.</p>
+      <article class="card ref-card">
+        <span class="pill pill--reference">Reference</span>
+        <span class="ref-handle">@brewtique.coffee</span>
+        <p>Consistently posting with focus on product.</p>
       </article>
 
-      <article class="bg-white border border-zinc-200 rounded-2xl p-6">
-        <span class="inline-block text-[10px] font-mono tracking-[0.18em] uppercase px-2 py-0.5 rounded-full bg-zinc-100 text-zinc-600 border border-zinc-200 mb-5">Reference</span>
-        <h3 class="text-2xl font-serif italic font-normal mb-3 tracking-tight">@niathefoodstudio</h3>
-        <p class="text-sm text-zinc-600 leading-relaxed">Approached us for B2B pesto sauce. Liked her page — promotes exactly what she does.</p>
+      <article class="card ref-card">
+        <span class="pill pill--reference">Reference</span>
+        <span class="ref-handle">@niathefoodstudio</span>
+        <p>Approached us for B2B pesto sauce. Liked her page — promotes exactly what she does.</p>
       </article>
 
-      <article class="bg-rose-50/40 border border-rose-200 rounded-2xl p-6 relative overflow-hidden">
-        <div class="absolute top-0 right-0 size-24 bg-rose-100/60 rounded-full blur-2xl pointer-events-none"></div>
-        <span class="relative inline-block text-[10px] font-mono tracking-[0.18em] uppercase px-2 py-0.5 rounded-full bg-rose-600 text-white mb-5">Watch closely</span>
-        <h3 class="relative text-2xl font-serif italic font-normal mb-3 tracking-tight text-rose-950">Drip</h3>
-        <p class="relative text-sm text-zinc-700 leading-relaxed">Launched breakfast after us but got ahead in marketing. Doing it well — product explanation, discounts, offers. <em class="text-rose-900">Study their approach.</em></p>
+      <article class="card ref-card ref-card--alert">
+        <span class="pill pill--alert">Watch closely</span>
+        <span class="ref-handle">Drip</span>
+        <p>Launched breakfast after us but got ahead in marketing. Doing it well — product explanation, discounts, offers. <em>Study their approach.</em></p>
       </article>
 
     </div>
   </section>
 
   <!-- ─────────── § V — Pipeline ─────────── -->
-  <section class="mb-12">
-    <div class="flex items-baseline gap-3 mb-5">
-      <span class="text-[11px] font-mono tracking-[0.18em] uppercase text-zinc-400">§ V</span>
-      <h2 class="text-xl md:text-2xl font-medium tracking-tight">Pipeline</h2>
-      <span class="ml-auto text-[11px] font-mono tracking-[0.18em] uppercase text-zinc-400">Not started</span>
+  <section class="section">
+    <div class="section-header">
+      <span class="section-num">§ V</span>
+      <h2 class="section-title">Pipeline</h2>
+      <span class="section-meta">Not started</span>
     </div>
 
-    <div class="bg-white border border-zinc-200 rounded-2xl divide-y divide-zinc-100 overflow-hidden">
+    <div class="pipeline">
 
-      <div class="grid grid-cols-[40px_1fr_auto] md:grid-cols-[60px_220px_1fr_auto] items-center gap-4 px-5 py-5 hover:bg-zinc-50/50 transition-colors">
-        <span class="text-2xl font-serif italic text-zinc-300">01</span>
-        <h3 class="font-medium tracking-tight col-span-1 md:col-span-1">PR strategy</h3>
-        <p class="hidden md:block text-sm text-zinc-600 leading-relaxed">Illustrators, artists, literary book clubs — unique brand proposition tied to literary space positioning.</p>
-        <span class="text-[10px] font-mono tracking-[0.18em] uppercase px-2 py-0.5 rounded-full bg-zinc-100 text-zinc-600 border border-zinc-200 shrink-0 justify-self-end">Not started</span>
+      <div class="pipeline-row">
+        <span class="pipeline-num">01</span>
+        <h3>PR strategy</h3>
+        <p>Illustrators, artists, literary book clubs — unique brand proposition tied to literary space positioning.</p>
+        <span class="pill pill--idle">Not started</span>
       </div>
 
-      <div class="grid grid-cols-[40px_1fr_auto] md:grid-cols-[60px_220px_1fr_auto] items-center gap-4 px-5 py-5 hover:bg-zinc-50/50 transition-colors">
-        <span class="text-2xl font-serif italic text-zinc-300">02</span>
-        <h3 class="font-medium tracking-tight">Professional photoshoot</h3>
-        <p class="hidden md:block text-sm text-zinc-600 leading-relaxed">Going live in May.</p>
-        <span class="text-[10px] font-mono tracking-[0.18em] uppercase px-2 py-0.5 rounded-full bg-sky-50 text-sky-700 border border-sky-200 shrink-0 justify-self-end">May</span>
+      <div class="pipeline-row">
+        <span class="pipeline-num">02</span>
+        <h3>Professional photoshoot</h3>
+        <p>Going live in May.</p>
+        <span class="pill pill--month">May</span>
       </div>
 
-      <div class="grid grid-cols-[40px_1fr_auto] md:grid-cols-[60px_220px_1fr_auto] items-center gap-4 px-5 py-5 hover:bg-zinc-50/50 transition-colors">
-        <span class="text-2xl font-serif italic text-zinc-300">03</span>
-        <h3 class="font-medium tracking-tight">Collabs</h3>
-        <p class="hidden md:block text-sm text-zinc-600 leading-relaxed">Artists, illustrators, book clubs — priority given literary positioning.</p>
-        <span class="text-[10px] font-mono tracking-[0.18em] uppercase px-2 py-0.5 rounded-full bg-zinc-100 text-zinc-600 border border-zinc-200 shrink-0 justify-self-end">Not started</span>
+      <div class="pipeline-row">
+        <span class="pipeline-num">03</span>
+        <h3>Collabs</h3>
+        <p>Artists, illustrators, book clubs — priority given literary positioning.</p>
+        <span class="pill pill--idle">Not started</span>
       </div>
 
-      <div class="grid grid-cols-[40px_1fr_auto] md:grid-cols-[60px_220px_1fr_auto] items-center gap-4 px-5 py-5 hover:bg-zinc-50/50 transition-colors">
-        <span class="text-2xl font-serif italic text-zinc-300">04</span>
-        <h3 class="font-medium tracking-tight">Stories strategy</h3>
-        <p class="hidden md:block text-sm text-zinc-400 leading-relaxed italic font-serif text-base">—</p>
-        <span class="text-[10px] font-mono tracking-[0.18em] uppercase px-2 py-0.5 rounded-full bg-zinc-100 text-zinc-600 border border-zinc-200 shrink-0 justify-self-end">Not started</span>
+      <div class="pipeline-row">
+        <span class="pipeline-num">04</span>
+        <h3>Stories strategy</h3>
+        <p class="pipeline-empty">—</p>
+        <span class="pill pill--idle">Not started</span>
       </div>
 
-      <div class="grid grid-cols-[40px_1fr_auto] md:grid-cols-[60px_220px_1fr_auto] items-center gap-4 px-5 py-5 hover:bg-zinc-50/50 transition-colors">
-        <span class="text-2xl font-serif italic text-zinc-300">05</span>
-        <h3 class="font-medium tracking-tight">Menu</h3>
-        <p class="hidden md:block text-sm text-zinc-600 leading-relaxed">Not started — no detail in notes.</p>
-        <span class="text-[10px] font-mono tracking-[0.18em] uppercase px-2 py-0.5 rounded-full bg-zinc-100 text-zinc-600 border border-zinc-200 shrink-0 justify-self-end">Not started</span>
+      <div class="pipeline-row">
+        <span class="pipeline-num">05</span>
+        <h3>Menu</h3>
+        <p>Not started — no detail in notes.</p>
+        <span class="pill pill--idle">Not started</span>
       </div>
 
     </div>
   </section>
 
-  <footer class="pt-6 border-t border-zinc-200 flex items-center justify-between gap-4 text-[11px] font-mono tracking-[0.18em] uppercase text-zinc-400">
-    <span class="inline-flex items-center gap-2.5">
-      <svg class="size-5 text-brand" viewBox="0 0 489 501" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <path d="M64.3722 221.732L2.58314 200.464L2.90382 199.414L69.5308 171.662L69.6911 171.138L17.143 157.188L18.9602 151.24L80.7493 172.508L80.4286 173.557L13.8017 201.309L13.6413 201.834L66.1895 215.783L64.3722 221.732Z M89.5934 150.349L35.85 115.55L39.2305 110.329L92.9739 145.129L89.5934 150.349Z M107.358 128.262L66.2105 77.4974L67.0384 76.7768L138.252 88.5235L138.666 88.1632L101.48 48.5003L106.172 44.4172L147.32 95.1818L146.492 95.9024L75.2789 84.1557L74.8649 84.516L112.05 124.179L107.358 128.262Z M166.811 81.7355L143.119 22.254L169.036 11.931L170.694 16.0947L155.045 20.0634C152.304 20.7614 150.48 21.2909 149.574 21.652L159.897 47.5689C160.633 47.2756 162.356 46.4911 165.064 45.2155L178.661 38.8151L180.218 42.7239L165.944 47.4249C163.1 48.3605 161.31 48.975 160.574 49.2684L171.912 77.7345C172.932 77.3284 174.649 76.4477 177.062 75.0924L191.324 67.1473L192.983 71.311L166.811 81.7355Z M235.745 64.4491L236.598 0.428467L263.486 0.78675L263.427 5.26819L248.273 2.96236C245.534 2.55997 243.707 2.35269 242.793 2.3405L242.411 30.9669C243.387 30.9799 245.278 30.9136 248.085 30.768L262.09 30.0399L262.034 34.247L248.053 33.1459C245.251 32.9257 243.362 32.809 242.387 32.796L241.964 64.5319L235.745 64.4491Z M285.578 37.3955C287.209 32.9926 289.495 29.1901 292.437 25.9881C295.457 22.7501 298.887 20.2491 302.727 18.4851C306.645 16.6852 310.777 15.7122 315.123 15.5663C319.547 15.3844 323.961 16.1089 328.364 17.7399C332.766 19.3708 336.558 21.6858 339.739 24.6848C342.998 27.6478 345.499 31.0777 347.242 34.9746C349.063 38.8355 350.036 42.9675 350.161 47.3705C350.364 51.7375 349.65 56.1224 348.019 60.5253C346.388 64.9282 344.063 68.7486 341.043 71.9867C338.101 75.1887 334.671 77.6897 330.753 79.4896C326.913 81.2536 322.781 82.2265 318.357 82.4085C314.011 82.5544 309.637 81.8119 305.234 80.1809C300.831 78.55 297 76.253 293.741 73.29C290.56 70.291 288.059 66.861 286.238 63.0001C284.495 59.1032 283.522 54.9713 283.319 50.6043C283.194 46.2013 283.947 41.7984 285.578 37.3955ZM292.097 39.8101C289.936 45.6425 289.07 51.1415 289.497 56.3069C289.946 61.4151 291.573 65.887 294.379 69.7225C297.206 73.5009 301.079 76.3008 305.996 78.1224C310.914 79.944 315.676 80.3424 320.282 79.3176C324.91 78.2356 329.068 75.8744 332.758 72.234C336.447 68.5937 339.361 63.8859 341.501 58.1106C343.64 52.3354 344.485 46.8937 344.036 41.7854C343.609 36.62 341.992 32.1195 339.186 28.284C336.38 24.4485 332.519 21.6199 327.601 19.7983C322.684 17.9768 317.911 17.607 313.283 18.689C308.734 19.7349 304.586 22.0675 300.84 25.6867C297.172 29.2699 294.257 33.9777 292.097 39.8101Z M305.199 136.216C299.33 148.445 290.796 168.461 285.962 203.688C285.354 208.109 287.487 212.435 291.15 217.088C294.814 221.742 300.044 226.763 305.685 232.569C316.978 244.193 329.967 259.009 335.632 280.529C342.459 306.462 337.022 324.874 326.476 337.448C315.924 350.031 300.238 356.791 286.533 359.37C256.469 365.033 235.857 362.571 221.52 355.2C207.187 347.832 199.098 335.542 194.104 321.489C189.109 307.431 187.217 291.625 185.271 277.234C184.299 270.042 183.312 263.202 181.916 257.12C180.52 251.039 178.713 245.704 176.093 241.524C166.912 226.869 155.931 218.273 147.244 213.342C142.901 210.876 139.131 209.326 136.445 208.393C135.102 207.926 134.031 207.613 133.294 207.417C133.072 207.358 132.88 207.313 132.72 207.274C132.813 207.244 132.916 207.21 133.031 207.173C133.593 206.994 134.42 206.738 135.477 206.434C137.592 205.825 140.629 205.022 144.317 204.243C151.695 202.685 161.674 201.222 172.089 201.608C182.504 201.993 193.342 204.226 202.449 210.043C211.551 215.858 218.936 225.262 222.435 240.022C227.546 261.577 227.51 278.43 225.583 291.757C223.655 305.087 219.834 314.892 217.362 322.371C216.128 326.106 215.226 329.274 215.075 332.006C214.924 334.747 215.528 337.061 217.312 339.074C219.089 341.08 222.023 342.773 226.494 344.311C230.967 345.85 236.998 347.239 244.988 348.628C252.983 350.018 259.234 350.339 264.056 349.777C268.879 349.216 272.285 347.773 274.575 345.628C279.159 341.334 279.202 334.302 277.384 326.204C275.565 318.098 271.861 308.835 268.849 300.022C267.342 295.611 266.007 291.31 265.164 287.313C264.32 283.314 263.97 279.628 264.424 276.445C264.847 273.485 265.768 272.26 266.818 271.884C267.349 271.694 267.936 271.71 268.551 271.857C269.168 272.003 269.802 272.276 270.421 272.589C271.042 272.903 271.631 273.247 272.173 273.539C272.704 273.826 273.196 274.066 273.594 274.143C273.796 274.181 273.992 274.182 274.163 274.11C274.34 274.035 274.468 273.891 274.546 273.689C274.621 273.491 274.651 273.235 274.64 272.918C274.63 272.6 274.579 272.209 274.484 271.735C267.209 235.613 235.414 215.46 213.037 203.894L213.036 203.894C209.334 201.981 206.488 199.217 204.877 196.302C203.296 193.443 202.91 190.454 204.033 187.971C207.744 189.851 211.593 190.536 214.84 190.111C218.028 189.694 220.65 188.204 221.964 185.713L222.087 185.469C223.941 181.619 225.988 178.798 228.356 176.737C230.724 174.678 233.421 173.371 236.591 172.558C242.943 170.928 251.165 171.285 262.389 171.547L262.495 171.55L262.54 171.455C267.491 161.173 273.455 153.88 280.572 148.385C287.601 142.958 295.762 139.282 305.199 136.216Z"/>
-      </svg>
-      NFD <span class="text-zinc-300">/</span> Marketing notes
+  <!-- ─────────── Footer ─────────── -->
+  <footer class="footer">
+    <span class="footer-left">
+      <span class="footer-mark">
+        <svg viewBox="0 0 489 501" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M64.3722 221.732L2.58314 200.464L2.90382 199.414L69.5308 171.662L69.6911 171.138L17.143 157.188L18.9602 151.24L80.7493 172.508L80.4286 173.557L13.8017 201.309L13.6413 201.834L66.1895 215.783L64.3722 221.732Z M89.5934 150.349L35.85 115.55L39.2305 110.329L92.9739 145.129L89.5934 150.349Z M107.358 128.262L66.2105 77.4974L67.0384 76.7768L138.252 88.5235L138.666 88.1632L101.48 48.5003L106.172 44.4172L147.32 95.1818L146.492 95.9024L75.2789 84.1557L74.8649 84.516L112.05 124.179L107.358 128.262Z M166.811 81.7355L143.119 22.254L169.036 11.931L170.694 16.0947L155.045 20.0634C152.304 20.7614 150.48 21.2909 149.574 21.652L159.897 47.5689C160.633 47.2756 162.356 46.4911 165.064 45.2155L178.661 38.8151L180.218 42.7239L165.944 47.4249C163.1 48.3605 161.31 48.975 160.574 49.2684L171.912 77.7345C172.932 77.3284 174.649 76.4477 177.062 75.0924L191.324 67.1473L192.983 71.311L166.811 81.7355Z M235.745 64.4491L236.598 0.428467L263.486 0.78675L263.427 5.26819L248.273 2.96236C245.534 2.55997 243.707 2.35269 242.793 2.3405L242.411 30.9669C243.387 30.9799 245.278 30.9136 248.085 30.768L262.09 30.0399L262.034 34.247L248.053 33.1459C245.251 32.9257 243.362 32.809 242.387 32.796L241.964 64.5319L235.745 64.4491Z M305.199 136.216C299.33 148.445 290.796 168.461 285.962 203.688C285.354 208.109 287.487 212.435 291.15 217.088C294.814 221.742 300.044 226.763 305.685 232.569C316.978 244.193 329.967 259.009 335.632 280.529C342.459 306.462 337.022 324.874 326.476 337.448C315.924 350.031 300.238 356.791 286.533 359.37C256.469 365.033 235.857 362.571 221.52 355.2C207.187 347.832 199.098 335.542 194.104 321.489C189.109 307.431 187.217 291.625 185.271 277.234C184.299 270.042 183.312 263.202 181.916 257.12C180.52 251.039 178.713 245.704 176.093 241.524C166.912 226.869 155.931 218.273 147.244 213.342C142.901 210.876 139.131 209.326 136.445 208.393Z"/>
+        </svg>
+      </span>
+      NFD <span class="sep">/</span> Marketing notes
     </span>
     <span>End of document</span>
   </footer>
