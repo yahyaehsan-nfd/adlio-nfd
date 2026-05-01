@@ -1,0 +1,196 @@
+
+<style>
+  .notes-wrap { padding: 1.5rem 0; font-family: var(--font-sans); }
+  .section-header { font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-text-tertiary); margin: 0 0 12px; }
+  .month-label { font-size: 13px; font-weight: 500; color: var(--color-text-secondary); margin: 0 0 8px; }
+  .card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1rem 1.25rem; margin-bottom: 10px; }
+  .card-title { font-size: 14px; font-weight: 500; color: var(--color-text-primary); margin: 0 0 4px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .card-body { font-size: 13px; color: var(--color-text-secondary); margin: 4px 0 0; line-height: 1.6; }
+  .badge { font-size: 11px; padding: 2px 8px; border-radius: 20px; font-weight: 500; white-space: nowrap; }
+  .badge-done { background: #EAF3DE; color: #3B6D11; }
+  .badge-open { background: #FAEEDA; color: #854F0B; }
+  .badge-blocked { background: #FCEBEB; color: #A32D2D; }
+  .badge-next { background: #E6F1FB; color: #185FA5; }
+  .badge-strategy { background: #EEEDFE; color: #3C3489; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+  .divider { border: none; border-top: 0.5px solid var(--color-border-tertiary); margin: 1.5rem 0; }
+  .action-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+  .action-text { flex: 1; }
+  .pillar { border-radius: var(--border-radius-md); padding: 8px 12px; margin-top: 8px; line-height: 1.6; font-size: 12px; }
+  .pillar-primary { background: #F5C4B3; color: #712B13; border-left: 3px solid #D85A30; }
+  .pillar-secondary { background: #EEEDFE; color: #3C3489; border-left: 3px solid #7F77DD; }
+  .pillar-label { font-size: 10px; font-weight: 500; letter-spacing: 0.07em; text-transform: uppercase; margin-bottom: 4px; opacity: 0.75; }
+  .note { font-size: 12px; background: #FAEEDA; color: #854F0B; border-left: 3px solid #EF9F27; border-radius: var(--border-radius-md); padding: 7px 10px; margin-top: 8px; line-height: 1.5; }
+  .ref-card { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 10px 12px; border: 0.5px solid var(--color-border-tertiary); }
+  .ref-handle { font-size: 12px; font-weight: 500; color: var(--color-text-info); margin-bottom: 4px; }
+  .ref-note { font-size: 12px; color: var(--color-text-secondary); line-height: 1.5; }
+  .ref-tag { font-size: 10px; padding: 2px 7px; border-radius: 20px; font-weight: 500; display: inline-block; margin-bottom: 6px; }
+  .ref-tag-watch { background: #FCEBEB; color: #A32D2D; }
+  .ref-tag-ref { background: #F1EFE8; color: #5F5E5A; }
+</style>
+<div class="notes-wrap">
+
+  <p class="section-header">Completed</p>
+
+  <div class="month-label">March</div>
+  <div class="grid-2">
+    <div class="card">
+      <div class="action-row">
+        <div class="action-text">
+          <div class="card-title">Night time UGC reels</div>
+          <div class="card-body">Currently being repurposed as ads.</div>
+          <div class="note">Night time content shouldn't run as ads — use morning vibe for ads instead. Exception: continental food.</div>
+        </div>
+        <span class="badge badge-done">Done</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="action-row">
+        <div class="action-text"><div class="card-title">Free coffee Eid post</div></div>
+        <span class="badge badge-done">Done</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="month-label">April</div>
+  <div class="card">
+    <div class="action-row">
+      <div class="action-text">
+        <div class="card-title">UGC + Alishaba influencer lineup</div>
+        <div class="card-body">New influencer UGC underway.</div>
+      </div>
+      <span class="badge badge-done">Done</span>
+    </div>
+  </div>
+
+  <hr class="divider">
+  <p class="section-header">Brand direction</p>
+
+  <div class="card">
+    <div class="action-row">
+      <div class="action-text">
+        <div class="card-title">Brand building &amp; marketing strategy</div>
+        <div class="card-body">Brand values positioning concept pitched.</div>
+      </div>
+      <span class="badge badge-strategy">Strategy</span>
+    </div>
+    <div class="pillar pillar-primary">
+      <div class="pillar-label">Primary</div>
+      Product, product, product — lead with what we make. Explain it, show it, sell it. Every post, every ad, every story.
+    </div>
+    <div class="pillar pillar-secondary">
+      <div class="pillar-label">Secondary</div>
+      NFD as a literary space — illustrators, artists, and book clubs as community identity. Collabs build who we are, not just reach.
+    </div>
+  </div>
+
+  <hr class="divider">
+  <p class="section-header">Open items — needs decision</p>
+
+  <div class="card">
+    <div class="action-row">
+      <div class="action-text">
+        <div class="card-title">Instagram grid strategy</div>
+        <div class="card-body">Grid aesthetic and posting cadence not defined. Weekend promotions to continue. Core problem: product marketing approach needs clarity.</div>
+      </div>
+      <span class="badge badge-open">Open</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="action-row">
+      <div class="action-text">
+        <div class="card-title">Ads — quality vs. product conflict</div>
+        <div class="card-body">~1 week to resolve. Approval process to be structured around three tracks:
+          <ul style="margin: 6px 0 0; padding-left: 16px;">
+            <li>Product-driven</li>
+            <li>Narrative-driven</li>
+            <li>Location-driven</li>
+          </ul>
+        </div>
+      </div>
+      <span class="badge badge-open">Open</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="action-row">
+      <div class="action-text">
+        <div class="card-title">Next week's ad plan</div>
+        <div class="card-body">Mother's Day ad — targeting 5th. Discount structure TBD.</div>
+      </div>
+      <span class="badge badge-next">This week</span>
+    </div>
+  </div>
+
+  <hr class="divider">
+  <p class="section-header">References</p>
+
+  <div class="grid-3">
+    <div class="ref-card">
+      <div class="ref-tag ref-tag-ref">Reference</div>
+      <div class="ref-handle"><a href="https://www.instagram.com/brewtique.coffee/" target="_blank">@brewtique.coffee</a></div>
+      <div class="ref-note">Consistently posting with focus on product.</div>
+    </div>
+    <div class="ref-card">
+      <div class="ref-tag ref-tag-ref">Reference</div>
+      <div class="ref-handle"><a href="https://www.instagram.com/niathefoodstudio/" target="_blank">@niathefoodstudio</a></div>
+      <div class="ref-note">Approached us for B2B pesto sauce. Liked her page — promotes exactly what she does.</div>
+    </div>
+    <div class="ref-card">
+      <div class="ref-tag ref-tag-watch">Watch closely</div>
+      <div class="ref-handle">Drip</div>
+      <div class="ref-note">Launched breakfast after us but got ahead in marketing. Doing it well — product explanation, discounts, offers. Study their approach.</div>
+    </div>
+  </div>
+
+  <hr class="divider">
+  <p class="section-header">Pipeline — not started</p>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="action-row">
+        <div class="action-text">
+          <div class="card-title">PR strategy</div>
+          <div class="card-body">Illustrators, artists, literary book clubs — unique brand proposition tied to literary space positioning.</div>
+        </div>
+        <span class="badge badge-blocked">Not started</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="action-row">
+        <div class="action-text">
+          <div class="card-title">Professional photoshoot</div>
+          <div class="card-body">Going live in May.</div>
+        </div>
+        <span class="badge badge-next">May</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="action-row">
+        <div class="action-text">
+          <div class="card-title">Collabs</div>
+          <div class="card-body">Artists, illustrators, book clubs — priority given literary positioning.</div>
+        </div>
+        <span class="badge badge-blocked">Not started</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="action-row">
+        <div class="action-text"><div class="card-title">Stories strategy</div></div>
+        <span class="badge badge-blocked">Not started</span>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="action-row">
+      <div class="action-text">
+        <div class="card-title">Menu</div>
+        <div class="card-body">Not started — no detail in notes.</div>
+      </div>
+      <span class="badge badge-blocked">Not started</span>
+    </div>
+  </div>
+
+</div>
